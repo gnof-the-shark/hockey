@@ -3,47 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Canadiens de Montréal — Matchs & live FR</title>
+    <title>Canadiens de Montréal — Live & Cast</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   </head>
   <body>
     <main class="container">
       <h1>Canadiens de Montréal</h1>
-      <p class="subtitle">Calendrier des matchs et accès live stream en français.</p>
+      <p class="subtitle">Matchs en direct et contrôle Cast</p>
 
       <section class="panel">
         <div class="panel-header">
-          <h2>Matchs</h2>
+          <h2>Match de ce soir</h2>
           <button id="refresh-btn" type="button">Actualiser</button>
         </div>
-        <p id="status" class="status">Chargement des données...</p>
-        <ul id="games-list" class="games-list"></ul>
+        <div id="status" class="status">Chargement des scores...</div>
+        <div id="game-info"></div>
       </section>
 
       <section class="panel">
-        <h2>Live stream en français</h2>
-        <p>
-          Sélectionne une source. Note : Les liens officiels s'ouvriront dans un nouvel onglet car ils bloquent l'intégration directe.
-        </p>
+        <h2>Live Stream</h2>
         <div class="stream-controls">
-          <select id="stream-select" aria-label="Source de live stream">
-            <option value="https://www.rds.ca/en-direct">RDS (Officiel - Abonnement requis)</option>
-            <option value="https://www.tvasports.ca/en-direct">TVA Sports (Officiel - Abonnement requis)</option>
-            <option value="https://gem.cbc.ca/live">CBC Gem (Gratuit - Samedi/Séries)</option>
-            <option value="iframe-source">Source Externe (Test)</option>
+          <select id="stream-select">
+            <option value="https://gem.cbc.ca/live">CBC Gem (Gratuit - Séries)</option>
+            <option value="https://www.rds.ca/en-direct">RDS (Officiel)</option>
+            <option value="https://www.tvasports.ca/en-direct">TVA Sports (Officiel)</option>
+            <option value="iframe-source">Flux Web Compatible</option>
           </select>
-          <button id="open-stream-btn" type="button">Lancer le flux</button>
+          
+          <div class="button-group">
+            <button id="open-stream-btn" type="button">Lancer le flux</button>
+            <google-cast-launcher id="cast-button"></google-cast-launcher>
+          </div>
         </div>
-        
+
         <div id="video-container" style="display:none; margin-top: 20px;">
-             <iframe 
-                id="stream-frame" 
-                width="100%" 
-                height="460" 
-                frameborder="0" 
-                scrolling="no" 
-                allowfullscreen>
-            </iframe>
+          <iframe id="stream-frame" width="100%" height="480" frameborder="0" allowfullscreen></iframe>
         </div>
       </section>
     </main>
