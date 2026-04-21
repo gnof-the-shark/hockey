@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const choice = streamSelect.value;
         if (choice === "iframe-source") {
             videoContainer.style.display = "block";
-            iframe.src = "https://onhockey.tv/np_stream400.php?channel=//dlstreams.com/stream/stream-833.php";
+            iframe.src = "https://onhockey.tv/np_stream400.php?channel=//dlstreams.com/stream/stream-833.php" width="710" height="460" frameborder="0" scrolling="no"></iframe>";
         } else {
             videoContainer.style.display = "none";
             window.open(choice, '_blank');
