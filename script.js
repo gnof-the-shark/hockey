@@ -9,6 +9,7 @@ const castBtn = document.getElementById("cast-btn");
 const appleTvBtn = document.getElementById("apple-tv-btn");
 const streamFrame = document.getElementById("stream-frame");
 const streamMessage = document.getElementById("stream-message");
+const ALLOWED_STREAM_HOSTS = new Set(["www.rds.ca", "www.tvasports.ca", "www.nhl.com"]);
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -118,19 +119,47 @@ async function fetchGames() {
 }
 
 function updateStream(url) {
-  streamFrame.src = url;
+  const safeUrl = getValidatedStreamUrl(url);
+  if (!safeUrl) {
+    streamMessage.textContent = "Source de stream invalide.";
+    return null;
+  }
+
+  streamFrame.src = safeUrl;
   streamMessage.textContent =
     "Si la vidéo ne charge pas ici, utilise le même lien dans un nouvel onglet.";
+  return safeUrl;
+}
+
+function getValidatedStreamUrl(rawUrl) {
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol !== "https:") {
+      return null;
+    }
+    if (!ALLOWED_STREAM_HOSTS.has(parsed.hostname)) {
+      return null;
+    }
+    return parsed.toString();
+  } catch (_) {
+    return null;
+  }
 }
 
 function openStream() {
-  const url = streamSelect.value;
-  updateStream(url);
-  window.open(url, "_blank", "noopener,noreferrer");
+  const safeUrl = updateStream(streamSelect.value);
+  if (!safeUrl) {
+    return;
+  }
+  window.open(safeUrl, "_blank", "noopener,noreferrer");
 }
 
 function castToGoogle() {
-  const url = streamSelect.value;
+  const safeUrl = getValidatedStreamUrl(streamSelect.value);
+  if (!safeUrl) {
+    streamMessage.textContent = "Source de stream invalide pour Google Cast.";
+    return;
+  }
   if (!window.cast || !window.chrome || !window.chrome.cast) {
     streamMessage.textContent =
       "Google Cast n’est pas disponible dans ce navigateur. Ouvre le flux dans Chrome avec Cast activé.";
@@ -142,7 +171,7 @@ function castToGoogle() {
     .requestSession()
     .then(() => {
       streamMessage.textContent = "Session Google Cast démarrée. Lance la lecture depuis la source ouverte.";
-      window.open(url, "_blank", "noopener,noreferrer");
+      window.open(safeUrl, "_blank", "noopener,noreferrer");
     })
     .catch(() => {
       streamMessage.textContent = "Impossible de démarrer Google Cast.";
@@ -150,10 +179,14 @@ function castToGoogle() {
 }
 
 function castToAppleTv() {
-  const url = streamSelect.value;
+  const safeUrl = getValidatedStreamUrl(streamSelect.value);
+  if (!safeUrl) {
+    streamMessage.textContent = "Source de stream invalide pour Apple TV.";
+    return;
+  }
   streamMessage.textContent =
     "Apple TV: ouvre la source puis utilise AirPlay depuis Safari ou l’app vidéo.";
-  window.open(url, "_blank", "noopener,noreferrer");
+  window.open(safeUrl, "_blank", "noopener,noreferrer");
 }
 
 refreshBtn.addEventListener("click", fetchGames);
