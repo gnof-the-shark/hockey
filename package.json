@@ -1,0 +1,17 @@
+{
+  "name": "hockey",
+  "version": "1.0.0",
+  "description": "Site web simple pour afficher les matchs du Canadien de Montréal",
+  "main": "script.js",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "echo \"No tests configured\""
+  },
+  "keywords": [
+    "hockey",
+    "canadiens",
+    "montreal"
+  ],
+  "author": "",
+  "license": "ISC"
+}
