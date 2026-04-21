@@ -1,85 +1,10 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b132b;
-  color: #f7f7f7;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.subtitle {
-  opacity: 0.9;
-}
-
-.panel {
-  background: #1c2541;
-  border: 1px solid #3a506b;
-  border-radius: 10px;
-  padding: 16px;
-  margin-top: 16px;
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.status {
-  color: #cbd5e1;
-}
-
-.games-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.games-list li {
-  border-top: 1px solid #3a506b;
-  padding: 10px 0;
-}
-
-.games-list li:first-child {
-  border-top: 0;
-}
-
-.stream-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-button,
-select {
-  border: 1px solid #3a506b;
-  border-radius: 8px;
-  background: #5bc0be;
-  color: #08111f;
-  font-weight: 700;
-  padding: 10px 12px;
-  cursor: pointer;
-}
-
-select {
-  min-width: 260px;
-  background: #e2e8f0;
-}
-
-#stream-frame {
-  width: 100%;
-  height: 420px;
-  border: 1px solid #3a506b;
-  border-radius: 8px;
-  background: #0b132b;
-}
+body { font-family: sans-serif; background: #1a1a1a; color: white; padding: 20px; }
+.container { max-width: 800px; margin: auto; }
+.panel { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+.status { color: #aaa; font-style: italic; }
+.button-group { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
+select, button { padding: 10px; border-radius: 5px; border: none; cursor: pointer; }
+button { background: #bf2f38; color: white; font-weight: bold; }
+button:hover { background: #e63946; }
+#cast-button { width: 40px; height: 40px; } /* Taille du bouton Chromecast */
+.score-card { font-size: 1.5rem; text-align: center; border: 1px solid #444; padding: 15px; }
