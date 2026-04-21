@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Canadiens de Montréal — Matchs & live FR</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="container">
@@ -16,36 +16,38 @@
           <h2>Matchs</h2>
           <button id="refresh-btn" type="button">Actualiser</button>
         </div>
-        <p id="status" class="status">Chargement…</p>
+        <p id="status" class="status">Chargement des données...</p>
         <ul id="games-list" class="games-list"></ul>
       </section>
 
       <section class="panel">
         <h2>Live stream en français</h2>
         <p>
-          Sélectionne une source officielle puis ouvre le flux. Certains diffuseurs bloquent
-          l’affichage intégré et demandent l’ouverture dans un nouvel onglet.
+          Sélectionne une source. Note : Les liens officiels s'ouvriront dans un nouvel onglet car ils bloquent l'intégration directe.
         </p>
         <div class="stream-controls">
           <select id="stream-select" aria-label="Source de live stream">
-            <option value="https://www.rds.ca/hockey/canadiens">RDS (officiel)</option>
-            <option value="https://www.tvasports.ca/hockey/lnh/canadiens">TVA Sports (officiel)</option>
-            <option value="https://www.nhl.com/fr/canadiens">NHL/Canadiens (officiel)</option>
+            <option value="https://www.rds.ca/en-direct">RDS (Officiel - Abonnement requis)</option>
+            <option value="https://www.tvasports.ca/en-direct">TVA Sports (Officiel - Abonnement requis)</option>
+            <option value="https://gem.cbc.ca/live">CBC Gem (Gratuit - Samedi/Séries)</option>
+            <option value="iframe-source">Source Externe (Test)</option>
           </select>
-          <button id="open-stream-btn" type="button">Ouvrir le stream</button>
-          <button id="cast-btn" type="button">Google Cast</button>
-          <button id="apple-tv-btn" type="button">Apple TV</button>
+          <button id="open-stream-btn" type="button">Lancer le flux</button>
         </div>
-        <p id="stream-message" class="status"></p>
-        <iframe
-          id="stream-frame"
-          title="Live stream du Canadien en français"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-        ></iframe>
+        
+        <div id="video-container" style="display:none; margin-top: 20px;">
+             <iframe 
+                id="stream-frame" 
+                width="100%" 
+                height="460" 
+                frameborder="0" 
+                scrolling="no" 
+                allowfullscreen>
+            </iframe>
+        </div>
       </section>
     </main>
 
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
