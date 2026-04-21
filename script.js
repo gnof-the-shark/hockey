@@ -1,55 +1,65 @@
+// --- CONFIGURATION CHROMECAST ---
+window.__onGCastApiAvailable = function(isAvailable) {
+    if (isAvailable) {
+        initializeCastApi();
+    }
+};
+
+function initializeCastApi() {
+    cast.framework.CastContext.getInstance().setOptions({
+        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+    });
+}
+
+// --- LOGIQUE DE L'INTERFACE ---
 document.addEventListener('DOMContentLoaded', () => {
     const streamSelect = document.getElementById('stream-select');
     const openBtn = document.getElementById('open-stream-btn');
     const iframe = document.getElementById('stream-frame');
     const videoContainer = document.getElementById('video-container');
+    const gameInfo = document.getElementById('game-info');
+    const status = document.getElementById('status');
 
+    // Gestion du stream
     openBtn.addEventListener('click', () => {
         const choice = streamSelect.value;
-
         if (choice === "iframe-source") {
-            // Exemple de chargement d'un flux compatible iframe
             videoContainer.style.display = "block";
             iframe.src = "https://onhockey.tv/np_stream400.php?channel=//dlstreams.com/stream/stream-833.php";
         } else {
-            // Pour RDS, TVA, CBC : Ouverture dans un nouvel onglet
             videoContainer.style.display = "none";
             window.open(choice, '_blank');
         }
     });
 
-    // Logique pour l'API NHL (Scores)
-    const refreshBtn = document.getElementById('refresh-btn');
-    const status = document.getElementById('status');
-    const gamesList = document.getElementById('games-list');
-
-    async function fetchScores() {
-        status.innerText = "Mise à jour...";
+    // Récupération des scores (NHL API)
+    async function fetchNHLData() {
         try {
-            // Note: Utilisation de l'API NHL v1 pour les Canadiens (ID: 8)
             const response = await fetch('https://api-web.nhle.com/v1/score/now');
             const data = await response.json();
             
-            // Filtrer pour trouver le match des Canadiens
-            const habsGame = data.games.find(g => g.homeTeam.abbrev === 'MTL' || g.awayTeam.abbrev === 'MTL');
+            // Chercher le match de Montréal (MTL)
+            const match = data.games.find(g => g.homeTeam.abbrev === 'MTL' || g.awayTeam.abbrev === 'MTL');
 
-            if (habsGame) {
-                gamesList.innerHTML = `
-                    <li>
-                        <strong>${habsGame.awayTeam.abbrev} ${habsGame.awayTeam.score ?? 0}</strong> vs 
-                        <strong>${habsGame.homeTeam.abbrev} ${habsGame.homeTeam.score ?? 0}</strong>
-                        <br><small>Statut: ${habsGame.gameState}</small>
-                    </li>`;
-                status.innerText = "À jour";
+            if (match) {
+                status.style.display = "none";
+                gameInfo.innerHTML = `
+                    <div class="score-card">
+                        <span>${match.awayTeam.abbrev} <strong>${match.awayTeam.score ?? 0}</strong></span>
+                        <span> vs </span>
+                        <span><strong>${match.homeTeam.score ?? 0}</strong> ${match.homeTeam.abbrev}</span>
+                        <p><small>Période: ${match.periodDescriptor.number} | Statut: ${match.gameState}</small></p>
+                    </div>
+                `;
             } else {
-                status.innerText = "Aucun match des Canadiens aujourd'hui.";
+                status.innerText = "Pas de match des Canadiens aujourd'hui.";
             }
         } catch (error) {
-            status.innerText = "Erreur de connexion à l'API.";
-            console.error(error);
+            status.innerText = "Erreur de chargement des scores.";
         }
     }
 
-    refreshBtn.addEventListener('click', fetchScores);
-    fetchScores(); // Appel au chargement
+    document.getElementById('refresh-btn').addEventListener('click', fetchNHLData);
+    fetchNHLData();
 });
