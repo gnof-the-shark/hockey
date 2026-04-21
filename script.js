@@ -109,8 +109,8 @@ async function fetchGames() {
         renderGames(normalized);
         return;
       }
-    } catch (_) {
-      // Try next endpoint.
+    } catch (error) {
+      console.debug("Erreur endpoint NHL ignorée:", error);
     }
   }
 
@@ -173,7 +173,8 @@ function castToGoogle() {
       streamMessage.textContent = "Session Google Cast démarrée. Lance la lecture depuis la source ouverte.";
       window.open(safeUrl, "_blank", "noopener,noreferrer");
     })
-    .catch(() => {
+    .catch((error) => {
+      console.debug("Erreur Google Cast:", error);
       streamMessage.textContent = "Impossible de démarrer Google Cast.";
     });
 }
