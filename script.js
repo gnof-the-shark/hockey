@@ -9,12 +9,16 @@ const castBtn = document.getElementById("cast-btn");
 const appleTvBtn = document.getElementById("apple-tv-btn");
 const streamFrame = document.getElementById("stream-frame");
 const streamMessage = document.getElementById("stream-message");
-const ALLOWED_STREAM_HOSTS = new Set(["www.rds.ca", "www.tvasports.ca", "www.nhl.com"]);
+const ALLOWED_STREAM_PREFIXES = [
+  "https://www.rds.ca/hockey/canadiens",
+  "https://www.tvasports.ca/hockey/lnh/canadiens",
+  "https://www.nhl.com/fr/canadiens",
+];
 
 function formatDate(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) {
-    return "Date à confirmer";
+    return "Date invalide";
   }
   return date.toLocaleString("fr-CA", {
     weekday: "short",
@@ -134,13 +138,9 @@ function updateStream(url) {
 function getValidatedStreamUrl(rawUrl) {
   try {
     const parsed = new URL(rawUrl);
-    if (parsed.protocol !== "https:") {
-      return null;
-    }
-    if (!ALLOWED_STREAM_HOSTS.has(parsed.hostname)) {
-      return null;
-    }
-    return parsed.toString();
+    const normalized = parsed.toString();
+    const isAllowed = ALLOWED_STREAM_PREFIXES.some((prefix) => normalized.startsWith(prefix));
+    return isAllowed ? normalized : null;
   } catch (_) {
     return null;
   }
@@ -160,23 +160,9 @@ function castToGoogle() {
     streamMessage.textContent = "Source de stream invalide pour Google Cast.";
     return;
   }
-  if (!window.cast || !window.chrome || !window.chrome.cast) {
-    streamMessage.textContent =
-      "Google Cast n’est pas disponible dans ce navigateur. Ouvre le flux dans Chrome avec Cast activé.";
-    return;
-  }
-
-  const castContext = window.cast.framework.CastContext.getInstance();
-  castContext
-    .requestSession()
-    .then(() => {
-      streamMessage.textContent = "Session Google Cast démarrée. Lance la lecture depuis la source ouverte.";
-      window.open(safeUrl, "_blank", "noopener,noreferrer");
-    })
-    .catch((error) => {
-      console.debug("Erreur Google Cast:", error);
-      streamMessage.textContent = "Impossible de démarrer Google Cast.";
-    });
+  streamMessage.textContent =
+    "Google Cast: ouvre la source dans Chrome puis utilise le bouton Cast de ton navigateur/appareil.";
+  window.open(safeUrl, "_blank", "noopener,noreferrer");
 }
 
 function castToAppleTv() {
